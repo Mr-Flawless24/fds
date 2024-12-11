@@ -1,113 +1,86 @@
-#include<iostream>
-#include<string.h>
+#include <iostream>
+#include <cstring>
 using namespace std;
-#define max 50
+#define MAX 50
 
-class STACK
-{
-  private:
-           char a[max];
-           int top;
-  
-  public :
-           STACK()
-           {
-             top = -1;
-           }
-           
-           void push(char);
-           void reverse();
-           void convert(char[]);
-           void palindrome();         
+class STACK {
+private:
+    char a[MAX];
+    int top;
+
+public:
+    STACK() { top = -1; }
+
+    void push(char c);
+    void reverse();
+    void convert(char str[]);
+    void palindrome();
 };
 
-void STACK:: push(char c)
-{
-  top++;
-  a[top] = c;
-  a[top+1] = '\0';
-  
-  cout<<endl<<c<<" is pushed on Stack.....";
+void STACK::push(char c) {
+    if (top >= MAX - 1) {
+        cout << "\nStack Overflow! Cannot push more characters.";
+        return;
+    }
+    top++;
+    a[top] = c;
+    a[top + 1] = '\0';
+    cout << c << " is pushed onto the Stack." << endl;
 }
 
-void STACK::reverse()
-{
-  char str[max];
-  cout<<"\n\n Reverse String is : ";
-  
-  for(int i = top,j=0;i>=0;i--,j++)
-  {
-    cout<<a[i];
-    str[j] = a[i];
-  }
-  cout<<endl;
+void STACK::reverse() {
+    cout << "\nReversed String is: ";
+    for (int i = top; i >= 0; i--) {
+        cout << a[i];
+    }
+    cout << endl;
 }
 
-void STACK::convert(char str[])
-{
-  int j,k,len = strlen(str);
-  for(j=0, k=0; j<len; j++)
-  {
-    if( ( (int)str[j] >= 97 && (int)str[j] <=122 ) || ( (int)str[j] >= 65 && (int)str[j]>=90))
-    {
-     if( (int)str[j] <=90 )
-	{
-          str[k] = (char)( (int)str[j] + 32 );
-	}
-     else
-      {
-       str[k] = str[j];				
-      }
-
-      k++;			
-     }
-  }
-  str[k]='\0';
-
-  cout<<endl<<"Converted String : "<<str<<"\n";
+void STACK::convert(char str[]) {
+    int k = 0;
+    int len = strlen(str);
+    for (int j = 0; j < len; j++) {
+        if (isalpha(str[j])) { // Check if the character is alphabetic
+            str[k] = tolower(str[j]); // Convert to lowercase
+            k++;
+        }
+    }
+    str[k] = '\0'; // Null-terminate the string
+    cout << "\nConverted String: " << str << endl;
 }
 
+void STACK::palindrome() {
+    char str[MAX];
+    int j = 0;
 
-void STACK::palindrome()
-{	
-	char str[max];
-	int i,j;		
+    // Reverse the stack content into a new string
+    for (int i = top; i >= 0; i--, j++) {
+        str[j] = a[i];
+    }
+    str[j] = '\0'; // Null-terminate the reversed string
 
-	for(i=top,j=0; i>=0; i--,j++)
-	{
-		str[j]=a[i];
-	}
-	str[j]='\0';
-	
-	
-	if(strcmp(str,a) == 0)
-		cout<<"\n\nString is palindrome...";
-	else
-		cout<<"\n\nString is not palindrome...";
+    // Compare the original stack content with the reversed string
+    if (strcmp(str, a) == 0)
+        cout << "\nString is a palindrome.";
+    else
+        cout << "\nString is not a palindrome.";
 }
 
+int main() {
+    STACK stack;
+    char str[MAX];
 
-int main()
-{
-	STACK stack;
+    cout << "\nEnter a String to check if it is a Palindrome or not:\n";
+    cin.getline(str, MAX);
 
-	char str[max];
-	int i=0;
-	
-	cout<<"\nEnter a String to check if it is a Palindrome or not  : \n\n";
-	
-	cin.getline(str , 50);
-	
-	stack.convert(str);
-	
-	while(str[i] != '\0')
-	{
-		stack.push(str[i]);
-		i++;
-	}
+    stack.convert(str);
 
-	stack.palindrome();
+    for (int i = 0; str[i] != '\0'; i++) {
+        stack.push(str[i]);
+    }
 
-	stack.reverse();
-	
+    stack.palindrome();
+    stack.reverse();
+
+    return 0;
 }
