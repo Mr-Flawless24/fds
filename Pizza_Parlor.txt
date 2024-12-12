@@ -6,7 +6,7 @@ class PizzaParlor {
     int* queue;
 
 public:
-    // Constructor to initialize the PizzaParlor with max size
+    // Constructor to initialize the PizzaParlor with a maximum size
     PizzaParlor(int M) {
         size = M;
         front = rear = -1;
@@ -88,18 +88,30 @@ int main() {
 
     PizzaParlor parlor(M);
 
-    // Example usage
-    parlor.placeOrder(1);
-    parlor.placeOrder(2);
-    parlor.placeOrder(3);
-    parlor.displayOrders();
+    int choice, orderNumber;
+    do {
+        cout << "\n1. Place Order\n2. Serve Order\n3. Display Orders\n4. Exit\nEnter your choice: ";
+        cin >> choice;
 
-    parlor.serveOrder();
-    parlor.displayOrders();
-
-    parlor.placeOrder(4);
-    parlor.placeOrder(5);
-    parlor.displayOrders();
+        switch (choice) {
+        case 1:
+            cout << "Enter order number to place: ";
+            cin >> orderNumber;
+            parlor.placeOrder(orderNumber);
+            break;
+        case 2:
+            parlor.serveOrder();
+            break;
+        case 3:
+            parlor.displayOrders();
+            break;
+        case 4:
+            cout << "Exiting the program." << endl;
+            break;
+        default:
+            cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 4);
 
     return 0;
 }
