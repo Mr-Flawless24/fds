@@ -1,3 +1,9 @@
+percentage = []
+n = int(input(" enter the number of students in class : "))
+for i in range(n):
+    k = float(input(" enter the percentage of students : "))
+    percentage.append(k)
+
 # insertion sort
 
 def insertionsort(percentage):
