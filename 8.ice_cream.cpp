@@ -10,22 +10,18 @@ public:
 class SLL {
 public:
     node* create();
-    void insert(node* head);
+    void insert(node* &head);
     void display(node* head);
     void intersection(node* A, node* B);
-    void union_set(node* A, node* B, node* U);
+    void union_set(node* A, node* B, node* &unionAB);
+    void neither_set(node* U, node* unionAB);
 };
 
 node* SLL::create() {
-    node* head;
-    head = new node();
-    cout << "\nEnter the Roll No. of first Student: ";
-    cin >> head->Roll_No;
-    head->next = NULL;
-    return head;
+    return NULL; // Initialize the list as empty
 }
 
-void SLL::insert(node* head) {
+void SLL::insert(node* &head) {
     int k;
     cout << "\nEnter the No. of members in class: ";
     cin >> k;
@@ -36,10 +32,14 @@ void SLL::insert(node* head) {
         cin >> n->Roll_No;
         n->next = NULL;
 
-        node* temp = head;
-        while (temp->next != NULL)
-            temp = temp->next;
-        temp->next = n;
+        if (head == NULL) {
+            head = n;
+        } else {
+            node* temp = head;
+            while (temp->next != NULL)
+                temp = temp->next;
+            temp->next = n;
+        }
     }
 }
 
@@ -65,60 +65,80 @@ void SLL::intersection(node* A, node* B) {
     cout << "\n";
 }
 
-void SLL::union_set(node* A, node* B, node* U) {
+void SLL::union_set(node* A, node* B, node* &unionAB) {
+    unionAB = NULL;
     node* tempA = A;
     node* tempB = B;
 
-    // Add all elements of A to the universal set
+    // Add all elements of A to the union set
     while (tempA != NULL) {
-        node* tempU = U;
-        bool found = false;
-        while (tempU != NULL) {
-            if (tempA->Roll_No == tempU->Roll_No) {
-                found = true;
-                break;
-            }
-            tempU = tempU->next;
-        }
-        if (!found) {
-            node* n = new node();
-            n->Roll_No = tempA->Roll_No;
-            n->next = NULL;
-            tempU = U;
-            while (tempU->next != NULL)
-                tempU = tempU->next;
-            tempU->next = n;
+        node* n = new node();
+        n->Roll_No = tempA->Roll_No;
+        n->next = NULL;
+
+        if (unionAB == NULL) {
+            unionAB = n;
+        } else {
+            node* tempUnion = unionAB;
+            while (tempUnion->next != NULL)
+                tempUnion = tempUnion->next;
+            tempUnion->next = n;
         }
         tempA = tempA->next;
     }
 
-    // Add all elements of B to the universal set
+    // Add unique elements of B to the union set
     while (tempB != NULL) {
-        node* tempU = U;
+        node* tempUnion = unionAB;
         bool found = false;
-        while (tempU != NULL) {
-            if (tempB->Roll_No == tempU->Roll_No) {
+        while (tempUnion != NULL) {
+            if (tempB->Roll_No == tempUnion->Roll_No) {
                 found = true;
                 break;
             }
-            tempU = tempU->next;
+            tempUnion = tempUnion->next;
         }
         if (!found) {
             node* n = new node();
             n->Roll_No = tempB->Roll_No;
             n->next = NULL;
-            tempU = U;
-            while (tempU->next != NULL)
-                tempU = tempU->next;
-            tempU->next = n;
+
+            node* tempUnion = unionAB;
+            while (tempUnion->next != NULL)
+                tempUnion = tempUnion->next;
+            tempUnion->next = n;
         }
         tempB = tempB->next;
     }
 }
 
+void SLL::neither_set(node* U, node* unionAB) {
+    cout << "\nSet of Students who like neither Vanilla nor Butterscotch:\n";
+    node* tempU = U;
+
+    while (tempU != NULL) {
+        node* tempUnion = unionAB;
+        bool found = false;
+
+        while (tempUnion != NULL) {
+            if (tempU->Roll_No == tempUnion->Roll_No) {
+                found = true;
+                break;
+            }
+            tempUnion = tempUnion->next;
+        }
+
+        if (!found) {
+            cout << tempU->Roll_No << " ";
+        }
+        tempU = tempU->next;
+    }
+    cout << "\n";
+}
+
 int main() {
     SLL s1;
-    node* U, * A, * B;
+    node* U, * A, * B, * unionAB;
 
     cout << "\nUNIVERSAL Set of Class\n";
     U = s1.create();
@@ -141,8 +161,10 @@ int main() {
     s1.intersection(A, B);
 
     cout << "\nSet of Students who like either Vanilla or Butterscotch:\n";
-    s1.union_set(A, B, U);
-    s1.display(U);
+    s1.union_set(A, B, unionAB);
+    s1.display(unionAB);
+
+    s1.neither_set(U, unionAB);
 
     return 0;
 }
